@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,10 +42,13 @@ public class MedicoController {
 	}
 	
 	@PostMapping("/salvar")
-	public String salvar(Medico medico) {
-		medicoService.salvar(medico);
-		return "redirect:/medicos/cadastrar";
-	}
+    public String salvar(@ModelAttribute Medico medico, BindingResult resultado) {
+        Especialidade especialidade = new Especialidade();
+        especialidade.setId(Long.valueOf(resultado.getFieldValue("especialidade").toString()));
+        medico.setEspecialidade(especialidade);
+        medicoService.salvar(medico);
+        return "redirect:/medicos/cadastrar";
+    }
 	
 	@GetMapping("/editar/{id}")
 	public String preEditar(@PathVariable("id") Long id, ModelMap model) {
