@@ -27,12 +27,25 @@ public class AgendamentoController {
 	
 	@Autowired
 	private AgendamentoService agendamentoService;
+    @Autowired
+    private EspecialidadeService especialidadeService;
+    @Autowired
+    private MedicoService medicoService;
+    @Autowired
+    private PacienteService pacienteService;
 
-
-	@GetMapping("/cadastrar")
-	public String cadastrar(Agendamento agendamento) {
-		return "/agendamento/cadastro";
-	}
+    @GetMapping("/cadastrar")
+    	public String cadastrar(ModelMap model) {
+    	Agendamento a = new Agendamento();
+    	List<Medico> medico = medicoService.buscarTodos();
+    	List<Paciente> paciente = pacienteService.buscarTodos();
+    	List<Especialidade> especialidade = especialidadeService.buscarTodos();	
+    	model.addAttribute("agendamento", a);
+    	model.addAttribute("medicos", medico);
+    	model.addAttribute("especialidades", especialidade);
+    	model.addAttribute("pacientes", paciente);	
+        return "/agendamento/cadastro";
+    }
 	
 	@GetMapping("/listar")
 	public String listar(ModelMap model) {
@@ -41,19 +54,45 @@ public class AgendamentoController {
 	}
 	
 	@PostMapping("/salvar")
-	public String salvar(Agendamento agendamento) {
-		agendamentoService.salvar(agendamento);
-		return "redirect:/agendamentos/cadastrar";
-	}
+    public String salvar(@ModelAttribute Agendamento agendamento,  BindingResult resultado) {
+    	Medico medico = new Medico();
+    	Especialidade especialidade = new Especialidade(); 
+    	Paciente paciente = new Paciente();
+		medico.setId( Long.valueOf(resultado.getFieldValue("medicos").toString()));
+		especialidade.setId( Long.valueOf(resultado.getFieldValue("especialidades").toString()));
+		paciente.setId( Long.valueOf(resultado.getFieldValue("pacientes").toString()));
+		agendamento.setMedicos(medico);
+		agendamento.setEspecialidades(especialidade);
+		agendamento.setPacientes(paciente);
+        agendamentoService.salvar(agendamento);
+        return "redirect:/agendamentos/cadastrar";
+    }
 	
 	@GetMapping("/editar/{id}")
 	public String preEditar(@PathVariable("id") Long id, ModelMap model) {
+		Agendamento a = new Agendamento();
+    	List<Medico> medico = medicoService.buscarTodos();
+    	List<Paciente> paciente = pacienteService.buscarTodos();
+    	List<Especialidade> especialidade = especialidadeService.buscarTodos();	
+    	model.addAttribute("agendamento", a);
+    	model.addAttribute("medicos", medico);
+    	model.addAttribute("especialidades", especialidade);
+    	model.addAttribute("pacientes", paciente);
 		model.addAttribute("agendamento", agendamentoService.buscarPorId(id));
 		return "/agendamento/cadastro";
 	}
 	
 	@PostMapping("/editar")
-	public String editar(Agendamento agendamento) {
+	public String editar(Agendamento agendamento, BindingResult resultado) {
+		Medico medico = new Medico();
+    	Especialidade especialidade = new Especialidade(); 
+    	Paciente paciente = new Paciente();
+		medico.setId( Long.valueOf(resultado.getFieldValue("medicos").toString()));
+		especialidade.setId( Long.valueOf(resultado.getFieldValue("especialidades").toString()));
+		paciente.setId( Long.valueOf(resultado.getFieldValue("pacientes").toString()));
+		agendamento.setMedicos(medico);
+		agendamento.setEspecialidades(especialidade);
+		agendamento.setPacientes(paciente);
 		agendamentoService.editar(agendamento);
 		return "redirect:/agendamentos/listar";
 	}
