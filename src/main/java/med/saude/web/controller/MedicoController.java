@@ -52,12 +52,19 @@ public class MedicoController {
     
     @GetMapping("/editar/{id}")
     public String preEditar(@PathVariable("id") Long id, ModelMap model) {
+    	 Medico medico = new Medico();
+         List <Especialidade> especialidade = especialidadeService.buscarTodos(); 
+         model.addAttribute("medico", medico);
+         model.addAttribute("especialidade", especialidade);
         model.addAttribute("medico", medicoService.buscarPorId(id));
         return "/medico/cadastro";
     }
     
     @PostMapping("/editar")
-    public String editar(Medico medico) {
+    public String editar(Medico medico, BindingResult resultado) {
+    	Especialidade especialidade = new Especialidade();
+        especialidade.setId(Long.valueOf(resultado.getFieldValue("especialidade").toString()));
+        medico.setEspecialidade(especialidade);
         medicoService.editar(medico);
         return "redirect:/medicos/listar";
     }

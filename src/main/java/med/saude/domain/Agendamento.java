@@ -18,7 +18,7 @@ public class Agendamento extends AbstractEntity<Long> {
 
 	private String nome;
 	@DateTimeFormat(iso = ISO.DATE)
-	@Column(name = "data_consulta", nullable = true, columnDefinition = "DATE")
+	@Column(name = "data_consulta", nullable = false, columnDefinition = "DATE")
 	private LocalDate dataConsulta;
 	
 	@ManyToOne

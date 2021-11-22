@@ -24,6 +24,7 @@
 			<<form
 				th:action="${agendamento.id == null} ? @{/agendamentos/salvar} : @{/agendamentos/editar}"
 				th:object="${agendamento}" method="POST">
+				
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="nome">Agendamento: </label> <input type="text"
@@ -41,11 +42,49 @@
 						<div class="invalid-feedback"></div>
 					</div>
 				</div>
+				
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="paciente">Paciente</label> <select
+							class="form-control" th:field="*{pacientes}">
+							<option value="">Selecione...</option>
+							<option th:each="p:${pacientes}"
+								th:value="${p.id}" th:text="${p.nome}" />
+						</select>
+						<div class="invalid-feedback"></div>
+					</div>
+				</div>
+				
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="medico">Medico</label> <select class="form-control"
+							th:field="*{medicos}">
+							<option value="">Selecione...</option>
+							<option th:each="m:${medicos}" th:value="${m.id}"
+								th:text="${m.nome}" />
+						</select>
+						<div class="invalid-feedback"></div>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="especialidade">Especialidade</label> <select
+							class="form-control" th:field="*{especialidades}">
+							<option value="">Selecione...</option>
+							<option th:each="e:${especialidades}"
+								th:value="${e.id}" th:text="${e.titulo}" />
+						</select>
+						<div class="invalid-feedback"></div>
+					</div>
+				</div>
+				
 
 				<input type="hidden" id="id" name="id" th:field="*{id}" />
 				<button type="submit" class="btn btn-primary btn-sm">Salvar</button>
 			</form>
 		</div>
+		
 	</section>
 
 	</div>
